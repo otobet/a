@@ -1,22 +1,16 @@
-name: WhatsApp Otomatik Kontrol
+name: WhatsApp Auto Check
 
-# Her dakika çalış
 on:
   schedule:
-    - cron: '* * * * *'
-  # Manuel çalıştırma seçeneği
+    - cron: '*/5 * * * *'  # Her 5 dakikada bir
   workflow_dispatch:
 
 jobs:
-  whatsapp-auto-check:
+  whatsapp-check:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: 🤖 WhatsApp Kontrol Çalıştır
-      run: |
-        echo "⏰ $(date): WhatsApp otomatik kontrol başlatılıyor..."
-        
-        # Ana kontrol URL'sini çağır
-        curl -s "http://phonegrafi.com/wap/cron/auto-control.php?cron=1"
-        
-        echo "✅ $(date): Kontrol isteği gönderildi"
+      - name: WhatsApp Kontrol
+        run: |
+          echo "$(date): WhatsApp kontrol başlatılıyor..."
+          curl -s "http://phonegrafi.com/wap/cron/auto-control.php?cron=1"
+          echo "$(date): Bitti"
