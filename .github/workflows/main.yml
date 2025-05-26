@@ -1,0 +1,37 @@
+name: WhatsApp Otomatik Kontrol
+
+# Her 3 dakikada bir çalış
+on:
+  schedule:
+    - cron: '*/3 * * * *'
+  # Manuel çalıştırma imkanı
+  workflow_dispatch:
+
+jobs:
+  whatsapp-control:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🤖 WhatsApp Kontrol Çalıştır
+      run: |
+        echo "⏰ $(date): WhatsApp kontrol başlatılıyor..."
+        
+        # Ana kontrol URL'si
+        response=$(curl -s -w "%{http_code}" "http://phonegrafi.com/wap/cron/auto-control.php?cron=1")
+        
+        if [[ "$response" == *"200" ]]; then
+          echo "✅ Kontrol başarılı - HTTP 200"
+        else
+          echo "❌ Kontrol hatası - HTTP: $response"
+          exit 1
+        fi
+        
+        echo "✅ $(date): WhatsApp kontrol tamamlandı"
+    
+    - name: 📊 Sistem Durumu Kontrol
+      run: |
+        echo "📊 Sistem durumu kontrol ediliyor..."
+        
+        # Sistem status kontrolü (opsiyonel)
+        status=$(curl -s "http://phonegrafi.com/wap/api/get-auto-status.php" | head -c 100)
+        echo "Sistem durumu: $status"
